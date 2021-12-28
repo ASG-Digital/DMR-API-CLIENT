@@ -20,6 +20,14 @@
   "autoload": {
     "psr-4": {
       "ASG\\DMRAPI\\": "./src/php/Classes/"
-    }
+    },
+    "files": [
+      "src/php/version.php"
+    ]
+  },
+  "require": {
+    "ext-json": "*",
+    "ext-simplexml": "*",
+    "ext-libxml": "*"
   }
 }

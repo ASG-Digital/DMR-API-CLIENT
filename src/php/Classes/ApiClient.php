@@ -2,6 +2,8 @@
 
 namespace ASG\DMRAPI;
 
+use ASG\DMRAPI\Exceptions\DmrApiException;
+
 class ApiClient
 {
     const API_URL = 'https://dmr.asg-digital.dk/api';
@@ -100,20 +102,44 @@ class ApiClient
      * @param string $clientKey
      * @param string $username
      * @param string $password
-     * @return ApiResponse
+     * @return void
+     * @throws DmrApiException
      */
     public function login($clientKey, $username, $password)
     {
-        $url = $this->buildUrl('login');
-        $response = $this->getHttpClient()->post($url, $this->makeHeaders(true), json_encode([
-            'client_key' => $clientKey,
-            'username' => $username,
-            'password' => $password,
-        ]));
-        $api = new ApiResponse($response);
-
-        if ($api->isSuccessful()) {
-
+        try {
+            $url = $this->buildUrl('login');
+            $response = $this->getHttpClient()->post($url, $this->makeHeaders(true), json_encode([
+                'client_key' => $clientKey,
+                'username' => $username,
+                'password' => $password,
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+            $api = new ApiResponse($response);
+            if (!$api->isSuccessful()) {
+                throw new DmrApiException('Login Failed', $api->getCode());
+            }
+            if (
+                !$api->has(['data.access_token', 'data.refresh_token']) ||
+                !is_string($api->get('data.access_token')) ||
+                !is_string($api->get('data.refresh_token'))
+            ) {
+                throw new DmrApiException('Login Failed', 502);
+            }
+            $this->keyPair = new KeyPair($api->get('data.access_token'), $api->get('data.refresh_token'));
+            return;
+        } catch (\Exception $exception) {
+            if ($exception instanceof DmrApiException) {
+                throw $exception;
+            }
+            throw new DmrApiException('Login Failed', -1, $exception);
         }
+    }
+
+    public function refreshTokens()
+    {
+        if (!($this->getKeyPair() instanceof KeyPair)) {
+            throw new DmrApiException('Cannot refresh without a valid KeyPair.');
+        }
+
     }
 }

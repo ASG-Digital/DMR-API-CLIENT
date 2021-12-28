@@ -39,4 +39,20 @@ class KeyPair
     {
         return $this->refreshToken;
     }
+
+    /**
+     * @return string[]
+     */
+    public function toArray()
+    {
+        return [
+            'access_token' => $this->getAccessToken(),
+            'refresh_token' => $this->getRefreshToken(),
+        ];
+    }
+
+    public static function fromArray(array $tokens)
+    {
+        // TODO: Implement this.
+    }
 }
