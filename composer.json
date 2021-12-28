@@ -1,0 +1,25 @@
+{
+  "name": "asg-digital/dmr-api-client",
+  "version": "0.0.1",
+  "type": "library",
+  "authors": [
+    {
+      "email": "ms@asg-digital.dk",
+      "name": "Martin René Sørensen",
+      "homepage": "https://asg-digital.dk/",
+      "role": "Developer"
+    },
+    {
+      "email": "mof@asg-digital.dk",
+      "name": "Mathias Ostenfeldt Fechtenburg",
+      "homepage": "https://asg-digital.dk/",
+      "role": "Developer"
+    }
+  ],
+  "homepage": "https://asg-digital.dk/",
+  "autoload": {
+    "psr-4": {
+      "ASG\\DMRAPI\\": "./src/php/Classes/"
+    }
+  }
+}
