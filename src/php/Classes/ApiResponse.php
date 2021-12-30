@@ -25,19 +25,31 @@ class ApiResponse implements HttpResponseInterface
     private $data = null;
 
     /**
+     * @var int|null
+     */
+    private $offset = null;
+
+    /**
+     * @var int|null
+     */
+    private $limit = null;
+
+    /**
+     * @var int|null
+     */
+    private $count = null;
+
+    /**
+     * @var string|null
+     */
+    private $unit = null;
+
+    /**
      * @param HttpResponseInterface $httpResponse
      */
     public function __construct(HttpResponseInterface $httpResponse)
     {
         $this->httpResponse = $httpResponse;
-    }
-
-    /**
-     * @return HttpResponseInterface
-     */
-    protected function getHttpResponse()
-    {
-        return $this->httpResponse;
     }
 
     /**
@@ -69,7 +81,7 @@ class ApiResponse implements HttpResponseInterface
      */
     public function getHeaders()
     {
-        return $this->getHttpResponse()->getHeaders();
+        return array_change_key_case($this->getHttpResponse()->getHeaders(), CASE_LOWER);
     }
 
     /**
@@ -77,15 +89,75 @@ class ApiResponse implements HttpResponseInterface
      */
     public function getData()
     {
-        if ($this->data === null) {
-            if ($this->hasJsonHeader()) {
-                $this->decodeJson();
-            }
-            if ($this->hasXmlHeader()) {
-                $this->decodeXml();
-            }
+        $this->loadContent();
+        if (!is_array($this->data) || !array_key_exists('data', $this->data)) {
+            return null;
         }
-        return $this->data;
+        return $this->data['data'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRangedResponse()
+    {
+        return $this->hasHeader('Content-Range');
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUnit()
+    {
+        if (!$this->isRangedResponse()) {
+            return null;
+        }
+        if ($this->unit === null) {
+            $this->loadFromRangeHeader();
+        }
+        return $this->unit;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getOffset()
+    {
+        if (!$this->isRangedResponse()) {
+            return null;
+        }
+        if ($this->offset === null) {
+            $this->loadFromRangeHeader();
+        }
+        return $this->offset;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLimit()
+    {
+        if (!$this->isRangedResponse()) {
+            return null;
+        }
+        if ($this->limit === null) {
+            $this->loadFromRangeHeader();
+        }
+        return $this->limit;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCount()
+    {
+        if (!$this->isRangedResponse()) {
+            return null;
+        }
+        if ($this->count === null) {
+            $this->loadFromRangeHeader();
+        }
+        return $this->count;
     }
 
     /**
@@ -113,12 +185,137 @@ class ApiResponse implements HttpResponseInterface
     }
 
     /**
+     * @param string|int|null $key
+     * @return mixed
+     */
+    public function get($key)
+    {
+        $data = $this->getData();
+        if (!$this->accessible($data)) {
+            return null;
+        }
+
+        if ($key === null) {
+            return $data;
+        }
+
+        if ($this->exists($data, $key)) {
+            return $data[$key];
+        }
+
+        if (strpos($key, '.') === false) {
+            return null;
+        }
+
+        foreach (explode('.', $key) as $part) {
+            if ($this->exists($data, $part)) {
+                $data = $data[$part];
+            } else {
+                return null;
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @param string[]|string $keys
+     * @return bool
+     */
+    public function has($keys)
+    {
+        if (is_string($keys)) {
+            $keys = [$keys];
+        }
+
+        if (!is_array($keys) || empty($keys)) {
+            return false;
+        }
+
+        foreach ($keys as $key) {
+            if ($this->exists(($data = $this->getData()), $key)) {
+                continue;
+            }
+
+            foreach (explode('.', $key) as $subKey) {
+                if ($this->exists($data, $subKey)) {
+                    $data = $data[$subKey];
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getMessage()
+    {
+        $this->loadContent();
+        if (!is_array($this->data) || !array_key_exists('message', $this->data)) {
+            return null;
+        }
+        return $this->data['message'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasMessage()
+    {
+        return !empty($this->getMessage());
+    }
+
+    /**
+     * @return HttpResponseInterface
+     */
+    protected function getHttpResponse()
+    {
+        return $this->httpResponse;
+    }
+
+    /**
+     * @return void
+     */
+    protected function loadFromRangeHeader()
+    {
+        if ($this->isRangedResponse()) {
+            $rangeHeader = $this->getHeaders()['content-range'];
+            if (is_array($rangeHeader)) {
+                $rangeHeader = $rangeHeader[array_key_first($rangeHeader)];
+            }
+            $rangeHeader = trim($rangeHeader);
+            if (preg_match('/^(\w+)\s+(\d+)\-(\d+)\/(\d+)$/', $rangeHeader, $matches) === 1) {
+                $this->unit = $matches[1];
+                $this->offset = $matches[2];
+                $this->limit = $matches[3];
+                $this->count = $matches[4];
+            }
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function loadContent()
+    {
+        if ($this->data === null) {
+            if ($this->hasJsonHeader()) {
+                $this->decodeJson();
+            }
+            if ($this->hasXmlHeader()) {
+                $this->decodeXml();
+            }
+        }
+    }
+
+    /**
      * @return bool
      */
     protected function hasJsonHeader()
     {
-        return array_key_exists('Content-Type', $this->getHeaders()) &&
-            $this->getHeaders()['Content-Type'] == 'application/json';
+        return $this->hasHeader('Content-Type', 'application/json');
     }
 
     /**
@@ -126,8 +323,29 @@ class ApiResponse implements HttpResponseInterface
      */
     protected function hasXmlHeader()
     {
-        return array_key_exists('Content-Type', $this->getHeaders()) &&
-            $this->getHeaders()['Content-Type'] == 'application/xml';
+        return $this->hasHeader('Content-Type', 'application/xml');
+    }
+
+    /**
+     * @param string $name
+     * @param string|null $value
+     * @return bool
+     */
+    protected function hasHeader($name, $value = null)
+    {
+        $name = strtolower($name);
+        if ($value === null) {
+            return array_key_exists($name, $this->getHeaders());
+        }
+        return array_key_exists($name, $this->getHeaders()) && (
+            (
+                is_array($this->getHeaders()[$name]) &&
+                in_array($value, $this->getHeaders()[$name])
+            ) || (
+                is_string($this->getHeaders()[$name]) &&
+                $this->getHeaders()[$name] == $value
+            )
+        );
     }
 
     /**
@@ -203,68 +421,5 @@ class ApiResponse implements HttpResponseInterface
             return $data->offsetExists($key);
         }
         return array_key_exists($key, $data);
-    }
-
-    /**
-     * @param string|int|null $key
-     * @return mixed
-     */
-    public function get($key)
-    {
-        $data = $this->getData();
-        if (!$this->accessible($data)) {
-            return null;
-        }
-
-        if ($key === null) {
-            return $data;
-        }
-
-        if ($this->exists($data, $key)) {
-            return $data[$key];
-        }
-
-        if (strpos($key, '.') === false) {
-            return null;
-        }
-
-        foreach (explode('.', $key) as $part) {
-            if ($this->exists($data, $part)) {
-                $data = $data[$part];
-            } else {
-                return null;
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * @param string[]|string $keys
-     * @return bool
-     */
-    public function has($keys)
-    {
-        if (is_string($keys)) {
-            $keys = [$keys];
-        }
-
-        if (!is_array($keys) || empty($keys)) {
-            return false;
-        }
-
-        foreach ($keys as $key) {
-            if ($this->exists(($data = $this->getData()), $key)) {
-                continue;
-            }
-
-            foreach (explode('.', $key) as $subKey) {
-                if ($this->exists($data, $subKey)) {
-                    $data = $data[$subKey];
-                } else {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }
