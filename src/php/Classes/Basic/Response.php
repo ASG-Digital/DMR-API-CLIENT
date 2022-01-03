@@ -56,4 +56,12 @@ class Response implements HttpResponseInterface
     {
         return $this->content;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasContent()
+    {
+        return !empty(trim($this->getContent()));
+    }
 }

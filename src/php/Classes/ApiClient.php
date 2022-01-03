@@ -74,12 +74,12 @@ class ApiClient
         $url .= '/' . rtrim($version , '/');
         $url .= '/' . trim($action, '/');
         if (!empty($queryParams)) {
-            $url .=  '?' . http_build_query(
+            $url .=  '?' . rawurldecode(http_build_query(
                 $queryParams,
                     '',
                     null,
                     PHP_QUERY_RFC3986
-            );
+            ));
         }
         return $url;
     }

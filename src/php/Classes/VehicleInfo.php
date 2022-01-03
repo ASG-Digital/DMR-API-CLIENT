@@ -168,7 +168,7 @@ class VehicleInfo
      * @return ApiResponse
      * @throws DmrApiException
      */
-    public function getInspections($lookup, $value)
+    public function getInspection($lookup, $value)
     {
         $this->checkLookup($lookup);
         $this->getApiClient()->requireAuth();
@@ -250,7 +250,7 @@ class VehicleInfo
         $this->checkLookup($lookup);
         $this->getApiClient()->requireAuth();
         return new ApiResponse($this->getApiClient()->getHttpClient()->get(
-            $this->buildUrl('insurance/history', [
+            $this->buildUrl('queue', [
                 'type' => $lookup,
                 'value' => $value,
                 'force' => ($force ? 'true' : 'false'),
