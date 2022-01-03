@@ -16,6 +16,8 @@ class Filter
     const LESS_THAN_OR_EQUALS = 'lte';
     const SIZE = 'size';
     const EXISTS = 'exists';
+    const IN = 'in';
+    const NIN = 'nin';
 
     const VALID_OPERATORS = [
         self::EQUALS,
@@ -28,6 +30,8 @@ class Filter
         self::LESS_THAN_OR_EQUALS,
         self::SIZE,
         self::EXISTS,
+        self::IN,
+        self::NIN,
     ];
 
     /**
@@ -108,7 +112,7 @@ class Filter
         if ($value === null) {
             $value = 'null()';
         }
-        if (!is_string($value)) {
+        if (!is_string($value) && !is_array($value)) {
             throw new DmrApiException('Failed to parse value.');
         }
         return new Filter($field, $operator, $value);

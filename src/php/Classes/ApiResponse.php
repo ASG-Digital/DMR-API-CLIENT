@@ -69,6 +69,14 @@ class ApiResponse implements HttpResponseInterface
     }
 
     /**
+     * @return bool
+     */
+    public function hasContent()
+    {
+        return $this->getHttpResponse()->hasContent();
+    }
+
+    /**
      * @return int
      */
     public function getCode()
@@ -264,7 +272,7 @@ class ApiResponse implements HttpResponseInterface
      */
     public function hasMessage()
     {
-        return !empty($this->getMessage());
+        return $this->hasContent() && !empty($this->getMessage());
     }
 
     /**
@@ -353,6 +361,9 @@ class ApiResponse implements HttpResponseInterface
      */
     protected function decodeJson()
     {
+        if (!$this->hasContent()) {
+            return false;
+        }
         $data = json_decode(
             $this->getContent(),
             true,
@@ -373,6 +384,9 @@ class ApiResponse implements HttpResponseInterface
      */
     protected function decodeXml()
     {
+        if (!$this->hasContent()) {
+            return false;
+        }
         $xml = simplexml_load_string(
             $this->getContent(),
             "SimpleXMLElement",

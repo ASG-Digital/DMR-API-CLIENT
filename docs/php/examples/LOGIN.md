@@ -11,3 +11,9 @@ if (!($apiClient->getKeyPair() instanceof KeyPair)) {
 }
 
 ```
+
+If you wish to manually refresh the token stored in the `TokenStorage` provided in the [Setup](SETUP.md),
+then you can run the following method.
+```php
+$apiClient->refreshTokens();
+```

@@ -10,6 +10,11 @@ interface HttpResponseInterface
     public function getContent();
 
     /**
+     * @return bool
+     */
+    public function hasContent();
+
+    /**
      * @return int
      */
     public function getCode();
