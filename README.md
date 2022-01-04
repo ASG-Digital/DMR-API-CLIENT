@@ -15,9 +15,10 @@
 #### PHP
 For the PHP Client, this library may be installed by copying the `src/php` directory into the library directory of your project.
 
-If your project uses composer, you can install the PHP library by running `composer require asg-digital/dmr-api-client`.
-<br/>
-If your project does not use composer you may simply load the `load.php` file placed within the library directory.
+If your project <b>uses composer</b>, you can install the PHP library by running: <br/>`composer require asg-digital/dmr-api-client`.
+
+
+If your project does <b>not use composer</b> you may simply load the `load.php` file placed within the library directory.
 
 
 ### Documentation
