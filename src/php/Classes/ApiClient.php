@@ -77,7 +77,7 @@ class ApiClient
             $url .=  '?' . rawurldecode(http_build_query(
                 $queryParams,
                     '',
-                    null,
+                    '&',
                     PHP_QUERY_RFC3986
             ));
         }
