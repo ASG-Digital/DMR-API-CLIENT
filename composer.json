@@ -1,6 +1,7 @@
 {
   "name": "asg-digital/dmr-api-client",
   "type": "library",
+  "license": "MIT",
   "authors": [
     {
       "email": "ms@asg-digital.dk",

@@ -1,5 +1,7 @@
 # Login
 
+[Back](../ROOT.md)
+
 Note: This section extends the script made in the [Setup](SETUP.md) section.
 
 ```php

@@ -13,26 +13,10 @@
 ### Install
 
 #### PHP
-For the PHP Client, this library may be installed by copying the `src/php` directory
-into the library directory of your project.
+For the PHP Client, this library may be installed by copying the `src/php` directory into the library directory of your project.
 
-if your project uses composer copy/paste the following json into the autoload portion of your `composer.json` file:
-```json
-...
-"autoload": {
-    "psr-4": {
-        "ASG\\DMRAPI\\": "<path-to-the-library>/Classes/"
-    },
-    "files": [
-        "<path-to-the-library>/version.php",
-        "<path-to-the-library>/functions.php"
-    ]
-},
-...
-```
-
-if your project does not use composer you may simply load the `load.php` file placed within the
-library directory.
+If your project uses composer, you can install the PHP library by running `composer require asg-digital/dmr-api-client`.
+If your project does not use composer you may simply load the `load.php` file placed within the library directory.
 
 
 ### Documentation

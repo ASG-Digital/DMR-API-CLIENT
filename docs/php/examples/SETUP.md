@@ -1,7 +1,6 @@
 # Setup
 
-Note: This is the basic setup only, if you need a custom TokenStorage or HttpClient,
-see <!--other section link-->
+[Back](../ROOT.md)
 
 ```php
 <?php
