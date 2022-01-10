@@ -120,6 +120,7 @@ class CurlHttpClient implements HttpClientInterface
             throw new CurlException(curl_error($ch), curl_errno($ch));
         }
         $code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        curl_close($ch);
         return new Response($code, $responseHeaders, $data);
     }
 }
