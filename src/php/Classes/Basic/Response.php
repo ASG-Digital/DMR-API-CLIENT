@@ -22,15 +22,22 @@ class Response implements HttpResponseInterface
     private $content;
 
     /**
+     * @var string
+     */
+    private $uri;
+
+    /**
      * @param int $code
      * @param array $headers
      * @param string $content
+     * @param string $uri
      */
-    public function __construct($code, array $headers, $content)
+    public function __construct($code, array $headers, $content, $uri)
     {
         $this->code = $code;
         $this->headers = $headers;
         $this->content = $content;
+        $this->uri = $uri;
     }
 
     /**
@@ -63,5 +70,13 @@ class Response implements HttpResponseInterface
     public function hasContent()
     {
         return !empty(trim($this->getContent()));
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri()
+    {
+        return $this->uri;
     }
 }

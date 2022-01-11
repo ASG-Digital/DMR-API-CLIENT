@@ -2,7 +2,8 @@
 
 1. [Setup](examples/SETUP.md)
 2. [Login](examples/LOGIN.md)
-3. Endpoints
+3. [Error Handling](examples/ERROR.md)
+4. Endpoints
    1. [getDistinct](examples/endpoints/getDistinct.md)
    2. [getVehicle](examples/endpoints/getVehicle.md)
    3. [getVehicleList](examples/endpoints/getVehicleList.md)

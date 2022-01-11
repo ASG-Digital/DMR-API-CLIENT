@@ -2,7 +2,7 @@
 
 namespace ASG\DMRAPI\Basic;
 
-use ASG\DMRAPI\Exceptions\CurlException;
+use ASG\DMRAPI\Exceptions\HttpClientException;
 use ASG\DMRAPI\HttpClientInterface;
 use ASG\DMRAPI\HttpResponseInterface;
 
@@ -20,7 +20,7 @@ class CurlHttpClient implements HttpClientInterface
      * @param string $uri
      * @param array $headers
      * @return HttpResponseInterface
-     * @throws CurlException
+     * @throws HttpClientException
      */
     public function get($uri, array $headers)
     {
@@ -32,7 +32,7 @@ class CurlHttpClient implements HttpClientInterface
      * @param array $headers
      * @param string|null $data
      * @return HttpResponseInterface
-     * @throws CurlException
+     * @throws HttpClientException
      */
     public function post($uri, array $headers, $data = null)
     {
@@ -43,7 +43,7 @@ class CurlHttpClient implements HttpClientInterface
      * @param string $uri
      * @param array $headers
      * @return HttpResponseInterface
-     * @throws CurlException
+     * @throws HttpClientException
      */
     public function delete($uri, array $headers)
     {
@@ -55,7 +55,7 @@ class CurlHttpClient implements HttpClientInterface
      * @param array $headers
      * @param string|null $data
      * @return HttpResponseInterface
-     * @throws CurlException
+     * @throws HttpClientException
      */
     public function put($uri, array $headers, $data = null)
     {
@@ -67,7 +67,7 @@ class CurlHttpClient implements HttpClientInterface
      * @param array $headers
      * @param string|null $data
      * @return HttpResponseInterface
-     * @throws CurlException
+     * @throws HttpClientException
      */
     public function patch($uri, array $headers, $data = null)
     {
@@ -80,7 +80,7 @@ class CurlHttpClient implements HttpClientInterface
      * @param array $headers
      * @param string|null $data
      * @return Response
-     * @throws CurlException
+     * @throws HttpClientException
      */
     private function doRequest($method, $uri, array $headers, $data = null)
     {
@@ -117,10 +117,10 @@ class CurlHttpClient implements HttpClientInterface
         }
         curl_setopt_array($ch, $curlOptions);
         if (($data = curl_exec($ch)) === false) {
-            throw new CurlException(curl_error($ch), curl_errno($ch));
+            throw new HttpClientException(curl_error($ch), curl_errno($ch));
         }
         $code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         curl_close($ch);
-        return new Response($code, $responseHeaders, $data);
+        return new Response($code, $responseHeaders, $data, $uri);
     }
 }

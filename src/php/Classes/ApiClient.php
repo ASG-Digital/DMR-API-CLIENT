@@ -195,7 +195,7 @@ class ApiClient
     /**
      * Call this to require authentication for the subsequent calls
      * @return void
-     * @throws DmrApiException|\Exception
+     * @throws DmrApiException
      * @internal
      */
     public function requireAuth()
@@ -204,12 +204,19 @@ class ApiClient
             throw new DmrApiException('Invalid method call. Missing authentication.');
         }
         $data = $this->getKeyPair()->getDecodedAccessToken();
-        if (is_array($data) && array_key_exists('exp', $data) && is_numeric($data['exp'])) {
-            $exp = \DateTimeImmutable::createFromFormat('U', $data['exp'], new \DateTimeZone('UTC'));
-            $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
-            if ($now >= $exp) {
-                $this->refreshTokens();
+        try {
+            if (is_array($data) && array_key_exists('exp', $data) && is_numeric($data['exp'])) {
+                $exp = \DateTimeImmutable::createFromFormat('U', $data['exp'], new \DateTimeZone('UTC'));
+                $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+                if ($now >= $exp) {
+                    $this->refreshTokens();
+                }
             }
+        } catch (\Exception $exception) {
+            if ($exception instanceof DmrApiException) {
+                throw $exception;
+            }
+            throw new DmrApiException($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 

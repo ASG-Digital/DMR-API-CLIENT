@@ -23,4 +23,9 @@ interface HttpResponseInterface
      * @return array
      */
     public function getHeaders();
+
+    /**
+     * @return string
+     */
+    public function getUri();
 }

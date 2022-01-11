@@ -45,11 +45,18 @@ class ApiResponse implements HttpResponseInterface
     private $unit = null;
 
     /**
-     * @param HttpResponseInterface $httpResponse
+     * @var \Exception|null
      */
-    public function __construct(HttpResponseInterface $httpResponse)
+    private $exception;
+
+    /**
+     * @param HttpResponseInterface $httpResponse
+     * @param \Exception|null $exception
+     */
+    public function __construct(HttpResponseInterface $httpResponse, \Exception $exception = null)
     {
         $this->httpResponse = $httpResponse;
+        $this->exception = $exception;
     }
 
     /**
@@ -90,6 +97,30 @@ class ApiResponse implements HttpResponseInterface
     public function getHeaders()
     {
         return array_change_key_case($this->getHttpResponse()->getHeaders(), CASE_LOWER);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri()
+    {
+        return $this->getHttpResponse()->getUri();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasException()
+    {
+        return $this->exception instanceof \Exception;
+    }
+
+    /**
+     * @return \Exception|null
+     */
+    public function getException()
+    {
+        return $this->exception;
     }
 
     /**
