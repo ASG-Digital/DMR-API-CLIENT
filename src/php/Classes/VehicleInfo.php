@@ -317,7 +317,9 @@ class VehicleInfo
      */
     private function makeErrorResponse($exception)
     {
-        return new ApiResponse(new Response(400, [], json_encode([
+        return new ApiResponse(new Response(400, [
+            'content-type' => 'application/json'
+        ], json_encode([
             'message' => $exception->getMessage(),
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), ''), $exception);
     }
