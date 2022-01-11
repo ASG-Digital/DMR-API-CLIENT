@@ -117,7 +117,10 @@ class CurlHttpClient implements HttpClientInterface
         }
         curl_setopt_array($ch, $curlOptions);
         if (($data = curl_exec($ch)) === false) {
-            throw new HttpClientException(curl_error($ch), curl_errno($ch));
+            $err_msg = curl_error($ch);
+            $err_no = curl_errno($ch);
+            curl_close($ch);
+            throw new HttpClientException($err_msg, $err_no);
         }
         $code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         curl_close($ch);

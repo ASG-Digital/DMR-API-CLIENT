@@ -62,9 +62,9 @@ class VehicleInfo
                 $this->getApiClient()->makeHeaders(false)
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
@@ -99,9 +99,9 @@ class VehicleInfo
                 $this->getApiClient()->makeHeaders(false)
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
@@ -124,9 +124,9 @@ class VehicleInfo
                 $this->getApiClient()->makeHeaders(false)
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
@@ -159,9 +159,9 @@ class VehicleInfo
                 $headers
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
@@ -175,17 +175,18 @@ class VehicleInfo
         try {
             $this->checkLookup($lookup);
             $this->getApiClient()->requireAuth();
+            $uri = $this->buildUrl('evaluation', [
+                'type' => $lookup,
+                'value' => $value,
+            ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
-                $this->buildUrl('evaluation', [
-                    'type' => $lookup,
-                    'value' => $value,
-                ]),
+                $uri,
                 $this->getApiClient()->makeHeaders(false)
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
@@ -199,17 +200,18 @@ class VehicleInfo
         try {
             $this->checkLookup($lookup);
             $this->getApiClient()->requireAuth();
+            $uri = $this->buildUrl('inspection', [
+                'type' => $lookup,
+                'value' => $value,
+            ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
-                $this->buildUrl('inspection', [
-                    'type' => $lookup,
-                    'value' => $value,
-                ]),
+                $uri,
                 $this->getApiClient()->makeHeaders(false)
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
@@ -223,17 +225,18 @@ class VehicleInfo
         try {
             $this->checkLookup($lookup);
             $this->getApiClient()->requireAuth();
+            $uri = $this->buildUrl('inspection/history', [
+                'type' => $lookup,
+                'value' => $value,
+            ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
-                $this->buildUrl('inspection/history', [
-                    'type' => $lookup,
-                    'value' => $value,
-                ]),
+                $uri,
                 $this->getApiClient()->makeHeaders(false)
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
@@ -247,17 +250,18 @@ class VehicleInfo
         try {
             $this->checkLookup($lookup);
             $this->getApiClient()->requireAuth();
+            $uri = $this->buildUrl('insurance', [
+                'type' => $lookup,
+                'value' => $value,
+            ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
-                $this->buildUrl('insurance', [
-                    'type' => $lookup,
-                    'value' => $value,
-                ]),
+                $uri,
                 $this->getApiClient()->makeHeaders(false)
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
@@ -271,17 +275,18 @@ class VehicleInfo
         try {
             $this->checkLookup($lookup);
             $this->getApiClient()->requireAuth();
+            $uri = $this->buildUrl('insurance/history', [
+                'type' => $lookup,
+                'value' => $value,
+            ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
-                $this->buildUrl('insurance/history', [
-                    'type' => $lookup,
-                    'value' => $value,
-                ]),
+                $uri,
                 $this->getApiClient()->makeHeaders(false)
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
@@ -296,31 +301,33 @@ class VehicleInfo
         try {
             $this->checkLookup($lookup);
             $this->getApiClient()->requireAuth();
+            $uri = $this->buildUrl('queue', [
+                'type' => $lookup,
+                'value' => $value,
+                'force' => ($force ? 'true' : 'false'),
+            ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
-                $this->buildUrl('queue', [
-                    'type' => $lookup,
-                    'value' => $value,
-                    'force' => ($force ? 'true' : 'false'),
-                ]),
+                $uri,
                 $this->getApiClient()->makeHeaders(false)
             ));
         } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException);
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
         } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException);
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
         }
     }
 
     /**
      * @param \Exception $exception
+     * @param string $uri
      * @return ApiResponse
      */
-    private function makeErrorResponse($exception)
+    private function makeErrorResponse($exception, $uri = '')
     {
         return new ApiResponse(new Response(400, [
             'content-type' => 'application/json'
         ], json_encode([
             'message' => $exception->getMessage(),
-        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), ''), $exception);
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $uri), $exception);
     }
 }
