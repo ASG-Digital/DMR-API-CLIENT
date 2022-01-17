@@ -124,13 +124,17 @@ class ApiResponse implements HttpResponseInterface
     }
 
     /**
-     * @return array|null
+     * @param bool $asObject
+     * @return array|object|null
      */
-    public function getData()
+    public function getData($asObject = false)
     {
         $this->loadContent();
         if (!is_array($this->data) || !array_key_exists('data', $this->data)) {
             return null;
+        }
+        if ($asObject && !empty($this->data['data'])) {
+            return $this->convertArrayToObject($this->data['data']);
         }
         return $this->data['data'];
     }
@@ -466,5 +470,22 @@ class ApiResponse implements HttpResponseInterface
             return $data->offsetExists($key);
         }
         return array_key_exists($key, $data);
+    }
+
+    /**
+     * @param array $data
+     * @return object
+     */
+    protected function convertArrayToObject(array $data)
+    {
+        $obj = new \stdClass();
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $obj->{$key} = $this->convertArrayToObject($value);
+            } else {
+                $obj->{$key} = $value;
+            }
+        }
+        return $obj;
     }
 }

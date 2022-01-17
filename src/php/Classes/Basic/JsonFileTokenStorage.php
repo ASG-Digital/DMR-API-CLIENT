@@ -27,6 +27,9 @@ class JsonFileTokenStorage implements TokenStorageInterface
      */
     public function write(KeyPair $keyPair)
     {
+        if (!file_exists(dirname($this->filePath))) {
+            mkdir(dirname($this->filePath), 0777, true);
+        }
         file_put_contents(
             $this->filePath,
             json_encode($keyPair->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
