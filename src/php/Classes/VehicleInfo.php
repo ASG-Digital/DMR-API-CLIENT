@@ -109,6 +109,7 @@ class VehicleInfo
      * @param string $lookup
      * @param string|int $value
      * @return ApiResponse
+     * @deprecated
      */
     public function getCompleteVehicle($lookup, $value)
     {
@@ -135,6 +136,7 @@ class VehicleInfo
      * @param int $offset
      * @param int $limit
      * @return ApiResponse
+     * @todo Change this to use POST instead of GET
      */
     public function getVehicleList(array $filters = [], $offset = 0, $limit = 199)
     {
