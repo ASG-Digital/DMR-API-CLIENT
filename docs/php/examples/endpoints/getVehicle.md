@@ -23,14 +23,14 @@ if ($vehicle->isSuccessful() && $vehicle->hasContent()) {
 }
 ```
 
-if you need more data on the vehicle you can also use the following endpoint, but bear in mind that the following endpoint may be slower than the above endpoint.
+The cached endpoint(shown here under) will only look in the data we currently have, and will not attempt to read data from out upstream data source.
 
 ```php
 <?php
-
+# This is Deprecated
 use ASG\DMRAPI\Lookup;
 
-$vehicle = $apiClient->vehicleInfo()->getCompleteVehicle(Lookup::REG, 'AB12345');
+$vehicle = $apiClient->vehicleInfo()->getVehicleCached(Lookup::REG, 'AB12345');
 
 if ($vehicle->isSuccessful() && $vehicle->hasContent()) {
     var_dump($vehicle->getData());

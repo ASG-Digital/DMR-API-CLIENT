@@ -109,6 +109,31 @@ class VehicleInfo
      * @param string $lookup
      * @param string|int $value
      * @return ApiResponse
+     */
+    public function getVehicleCached($lookup, $value)
+    {
+        try {
+            $this->checkLookup($lookup);
+            $this->getApiClient()->requireAuth();
+            $uri = $this->buildUrl('cached', [
+                'type' => $lookup,
+                'value' => $value,
+            ]);
+            return new ApiResponse($this->getApiClient()->getHttpClient()->get(
+                $uri,
+                $this->getApiClient()->makeHeaders(false)
+            ));
+        } catch (DmrApiException $dmrApiException) {
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
+        } catch (HttpClientException $httpClientException) {
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
+        }
+    }
+
+    /**
+     * @param string $lookup
+     * @param string|int $value
+     * @return ApiResponse
      * @deprecated
      */
     public function getCompleteVehicle($lookup, $value)

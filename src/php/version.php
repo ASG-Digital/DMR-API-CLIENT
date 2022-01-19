@@ -1,3 +1,3 @@
 <?php
 
-define('DMR_API_CLIENT_VERSION', '1.1.4');
+define('DMR_API_CLIENT_VERSION', '1.2.0');
