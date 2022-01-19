@@ -27,7 +27,6 @@ The cached endpoint(shown here under) will only look in the data we currently ha
 
 ```php
 <?php
-# This is Deprecated
 use ASG\DMRAPI\Lookup;
 
 $vehicle = $apiClient->vehicleInfo()->getVehicleCached(Lookup::REG, 'AB12345');
