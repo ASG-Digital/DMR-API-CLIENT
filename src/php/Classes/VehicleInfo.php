@@ -83,9 +83,10 @@ class VehicleInfo
     /**
      * @param string $lookup
      * @param string|int $value
+     * @param bool $forceLiveData
      * @return ApiResponse
      */
-    public function getVehicle($lookup, $value)
+    public function getVehicle($lookup, $value, $forceLiveData = false)
     {
         try {
             $this->checkLookup($lookup);
@@ -93,6 +94,7 @@ class VehicleInfo
             $uri = $this->buildUrl('', [
                 'type' => $lookup,
                 'value' => $value,
+                'force' => $forceLiveData,
             ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
                 $uri,
@@ -220,9 +222,10 @@ class VehicleInfo
     /**
      * @param string $lookup
      * @param string|int $value
+     * @param bool $forceLiveData
      * @return ApiResponse
      */
-    public function getInspection($lookup, $value)
+    public function getInspection($lookup, $value, $forceLiveData = false)
     {
         try {
             $this->checkLookup($lookup);
@@ -230,6 +233,7 @@ class VehicleInfo
             $uri = $this->buildUrl('inspection', [
                 'type' => $lookup,
                 'value' => $value,
+                'force' => $forceLiveData,
             ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
                 $uri,
@@ -245,9 +249,10 @@ class VehicleInfo
     /**
      * @param string $lookup
      * @param string|int $value
+     * @param bool $forceLiveData
      * @return ApiResponse
      */
-    public function getInspectionHistory($lookup, $value)
+    public function getInspectionHistory($lookup, $value, $forceLiveData = false)
     {
         try {
             $this->checkLookup($lookup);
@@ -255,6 +260,7 @@ class VehicleInfo
             $uri = $this->buildUrl('inspection/history', [
                 'type' => $lookup,
                 'value' => $value,
+                'force' => $forceLiveData,
             ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
                 $uri,
@@ -270,9 +276,10 @@ class VehicleInfo
     /**
      * @param string $lookup
      * @param string|int $value
+     * @param bool $forceLiveData
      * @return ApiResponse
      */
-    public function getInsurance($lookup, $value)
+    public function getInsurance($lookup, $value, $forceLiveData = false)
     {
         try {
             $this->checkLookup($lookup);
@@ -280,6 +287,7 @@ class VehicleInfo
             $uri = $this->buildUrl('insurance', [
                 'type' => $lookup,
                 'value' => $value,
+                'force' => $forceLiveData,
             ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
                 $uri,
@@ -295,9 +303,10 @@ class VehicleInfo
     /**
      * @param string $lookup
      * @param string|int $value
+     * @param bool $forceLiveData
      * @return ApiResponse
      */
-    public function getInsuranceHistory($lookup, $value)
+    public function getInsuranceHistory($lookup, $value, $forceLiveData = false)
     {
         try {
             $this->checkLookup($lookup);
@@ -305,6 +314,7 @@ class VehicleInfo
             $uri = $this->buildUrl('insurance/history', [
                 'type' => $lookup,
                 'value' => $value,
+                'force' => $forceLiveData
             ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
                 $uri,
