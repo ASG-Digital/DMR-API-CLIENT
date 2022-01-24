@@ -133,32 +133,6 @@ class VehicleInfo
     }
 
     /**
-     * @param string $lookup
-     * @param string|int $value
-     * @return ApiResponse
-     * @deprecated
-     */
-    public function getCompleteVehicle($lookup, $value)
-    {
-        try {
-            $this->checkLookup($lookup);
-            $this->getApiClient()->requireAuth();
-            $uri = $this->buildUrl('complete', [
-                'type' => $lookup,
-                'value' => $value,
-            ]);
-            return new ApiResponse($this->getApiClient()->getHttpClient()->get(
-                $uri,
-                $this->getApiClient()->makeHeaders(false)
-            ));
-        } catch (DmrApiException $dmrApiException) {
-            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
-        } catch (HttpClientException $httpClientException) {
-            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
-        }
-    }
-
-    /**
      * @param Filter[] $filters
      * @param int $offset
      * @param int $limit
