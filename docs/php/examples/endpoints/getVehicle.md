@@ -4,12 +4,15 @@
 
 Note: This section extends the script made in the [Setup](../SETUP.md) section.
 
+You can force the API to collect data from DMR, this will ignore data already collected.<br/> 
+Default is set to false.
+
 ```php
 <?php
 
 use ASG\DMRAPI\Lookup;
 
-$vehicle = $apiClient->vehicleInfo()->getVehicle(Lookup::REG, 'AB12345');
+$vehicle = $apiClient->vehicleInfo()->getVehicle(Lookup::REG, 'AB12345', $forceLiveData = false);
 
 if ($vehicle->isSuccessful() && $vehicle->hasContent()) {
     var_dump($vehicle->getData());
