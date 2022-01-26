@@ -6,7 +6,6 @@ use ASG\DMRAPI\Exceptions\DmrApiException;
 
 class ApiClient
 {
-    const API_URL = 'https://dmr.asg-digital.dk/api';
     const VERSION1 = 'v1';
 
     /**
@@ -70,15 +69,15 @@ class ApiClient
      */
     public function buildUrl($action, array $queryParams = [], $version = self::VERSION1)
     {
-        $url = self::API_URL;
-        $url .= '/' . rtrim($version , '/');
+        $url = rtrim($this->getHttpClient()->getBaseUrl(), " \t\n\r\0\x0B/");
+        $url .= '/' . rtrim($version, '/');
         $url .= '/' . trim($action, '/');
         if (!empty($queryParams)) {
             $url .=  '?' . http_build_query(
                 $queryParams,
-                    '',
-                    '&',
-                    PHP_QUERY_RFC3986
+                '',
+                '&',
+                PHP_QUERY_RFC3986
             );
         }
         return $url;

@@ -8,6 +8,22 @@ use ASG\DMRAPI\HttpResponseInterface;
 
 class CurlHttpClient implements HttpClientInterface
 {
+    const LIVE_URL = 'https://dmr.asg-digital.dk/api';
+    const STAGING_URL = 'https://dmr.staging.asg-digital.dk/api';
+
+    /**
+     * @var string
+     */
+    private $baseUrl;
+
+    /**
+     * @param string $baseUrl
+     */
+    public function __construct($baseUrl = self::LIVE_URL)
+    {
+        $this->baseUrl = $baseUrl;
+    }
+
     /**
      * @return string
      */
@@ -125,5 +141,13 @@ class CurlHttpClient implements HttpClientInterface
         $code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         curl_close($ch);
         return new Response($code, $responseHeaders, $data, $uri);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
     }
 }
