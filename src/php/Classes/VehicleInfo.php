@@ -8,6 +8,13 @@ use ASG\DMRAPI\Exceptions\DmrApiException;
 
 class VehicleInfo
 {
+    const DEFAULT_DATA = 32;
+    const INSURANCE_DATA = 16;
+    const INSURANCE_HISTORY = 8;
+    const INSPECTION_DATA = 4;
+    const INSPECTION_HISTORY = 2;
+    const EVALUATIONS = 1;
+
     /**
      * @var ApiClient
      */
@@ -46,7 +53,7 @@ class VehicleInfo
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return ApiResponse
      */
     public function getDistinct($type)
@@ -110,6 +117,39 @@ class VehicleInfo
     /**
      * @param string $lookup
      * @param string|int $value
+     * @param int $fields
+     * @param bool $forceLiveData
+     * @return ApiResponse
+     */
+    public function getVehicleFromParams(
+        $lookup,
+        $value,
+        $fields = self::DEFAULT_DATA,
+        $forceLiveData = false
+    ) {
+        try {
+            $this->checkLookup($lookup);
+            $this->getApiClient()->requireAuth();
+            $uri = $this->buildUrl('from-params', [
+                'type' => $lookup,
+                'value' => $value,
+                'params' => str_pad(decbin($fields), 6, '0', STR_PAD_LEFT),
+                'force' => $forceLiveData,
+            ]);
+            return new ApiResponse($this->getApiClient()->getHttpClient()->get(
+                $uri,
+                $this->getApiClient()->makeHeaders(false)
+            ));
+        } catch (DmrApiException $dmrApiException) {
+            return $this->makeErrorResponse($dmrApiException, (isset($uri) ? $uri : ''));
+        } catch (HttpClientException $httpClientException) {
+            return $this->makeErrorResponse($httpClientException, (isset($uri) ? $uri : ''));
+        }
+    }
+
+    /**
+     * @param string $lookup
+     * @param string|int $value
      * @return ApiResponse
      */
     public function getVehicleCached($lookup, $value)
@@ -147,7 +187,7 @@ class VehicleInfo
             }
             $this->getApiClient()->requireAuth();
             $f = [];
-            array_walk($filters, function (Filter $item, $key) use(&$f) {
+            array_walk($filters, function (Filter $item, $key) use (&$f) {
                 $f[$key] = [
                     0 => $item->getField(),
                     1 => $item->getOperator(),
