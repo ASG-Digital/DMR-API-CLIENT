@@ -106,7 +106,7 @@ class ApiClientTest extends BaseTestCase
     public function testLogin()
     {
         $this->assertTrue(
-            static::$apiClient->login(getenv('CLIENT_KEY'), getenv('USERNAME'), getenv('PASSWORD')),
+            static::$apiClient->login(getenv('TEST_CLIENT_KEY'), getenv('TEST_USERNAME'), getenv('TEST_PASSWORD')),
             'Login failed.'
         );
     }
