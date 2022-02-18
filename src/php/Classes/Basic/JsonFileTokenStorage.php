@@ -55,4 +55,14 @@ class JsonFileTokenStorage implements TokenStorageInterface
         }
         return KeyPair::fromArray($data);
     }
+
+    /**
+     * @return void
+     */
+    public function reset()
+    {
+        if (file_exists($this->filePath)) {
+            unlink($this->filePath);
+        }
+    }
 }

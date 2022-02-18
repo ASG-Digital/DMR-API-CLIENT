@@ -6,6 +6,8 @@ use ASG\DMRAPI\Exceptions\DmrApiException;
 
 class ApiClient
 {
+    const LIVE_URL = 'https://dmr.asg-digital.dk/api';
+    const STAGING_URL = 'https://dmr.staging.asg-digital.dk/api';
     const VERSION1 = 'v1';
 
     /**
@@ -30,13 +32,23 @@ class ApiClient
     private $tokenStorage;
 
     /**
+     * @var string
+     */
+    private $baseUri;
+
+    /**
      * @param HttpClientInterface $httpClient
      * @param TokenStorageInterface|null $tokenStorage
+     * @param string $baseUri
      */
-    public function __construct(HttpClientInterface $httpClient, TokenStorageInterface $tokenStorage = null)
-    {
+    public function __construct(
+        HttpClientInterface $httpClient,
+        TokenStorageInterface $tokenStorage = null,
+        $baseUri = self::LIVE_URL
+    ) {
         $this->httpClient = $httpClient;
         $this->tokenStorage = $tokenStorage;
+        $this->baseUri = $baseUri;
     }
 
     /**
@@ -69,7 +81,7 @@ class ApiClient
      */
     public function buildUrl($action, array $queryParams = [], $version = self::VERSION1)
     {
-        $url = rtrim($this->getHttpClient()->getBaseUrl(), " \t\n\r\0\x0B/");
+        $url = rtrim($this->getBaseUri(), " \t\n\r\0\x0B/");
         $url .= '/' . rtrim($version, '/');
         $url .= '/' . trim($action, '/');
         if (!empty($queryParams)) {
@@ -114,14 +126,14 @@ class ApiClient
      * @param string $clientKey
      * @param string $username
      * @param string $password
-     * @return void
+     * @return bool
      * @throws DmrApiException
      */
     public function login($clientKey, $username, $password)
     {
         try {
             $url = $this->buildUrl('login');
-            $this->handleLoginResponse($this->getHttpClient()->post($url, $this->makeHeaders(true), json_encode([
+            return $this->handleLoginResponse($this->getHttpClient()->post($url, $this->makeHeaders(true), json_encode([
                 'client_key' => $clientKey,
                 'username' => $username,
                 'password' => $password,
@@ -135,7 +147,7 @@ class ApiClient
     }
 
     /**
-     * @return void
+     * @return bool
      * @throws DmrApiException
      */
     public function refreshTokens()
@@ -145,7 +157,7 @@ class ApiClient
         }
         try {
             $url = $this->buildUrl('login/refresh');
-            $this->handleLoginResponse($this->getHttpClient()->post($url, $this->makeHeaders(true), json_encode([
+            return $this->handleLoginResponse($this->getHttpClient()->post($url, $this->makeHeaders(true), json_encode([
                 'refresh_token' => $this->getKeyPair()->getRefreshToken(),
             ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)));
         } catch (\Exception $exception) {
@@ -158,7 +170,7 @@ class ApiClient
 
     /**
      * @param HttpResponseInterface $response
-     * @return void
+     * @return bool
      * @throws DmrApiException
      */
     private function handleLoginResponse(HttpResponseInterface $response)
@@ -182,7 +194,7 @@ class ApiClient
             if ($this->tokenStorage !== null) {
                 $this->tokenStorage->write($this->keyPair);
             }
-            return;
+            return true;
         } catch (\Exception $exception) {
             if ($exception instanceof DmrApiException) {
                 throw $exception;
@@ -228,5 +240,13 @@ class ApiClient
             $this->vehicleInfo = new VehicleInfo($this);
         }
         return $this->vehicleInfo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseUri()
+    {
+        return $this->baseUri;
     }
 }

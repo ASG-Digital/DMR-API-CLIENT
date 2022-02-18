@@ -28,4 +28,9 @@ interface HttpResponseInterface
      * @return string
      */
     public function getUri();
+
+    /**
+     * @return bool
+     */
+    public function isSuccessful();
 }

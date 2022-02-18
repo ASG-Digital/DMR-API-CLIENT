@@ -14,4 +14,9 @@ interface TokenStorageInterface
      * @return KeyPair|null
      */
     public function read();
+
+    /**
+     * @return void
+     */
+    public function reset();
 }

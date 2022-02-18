@@ -7,11 +7,6 @@ interface HttpClientInterface
     /**
      * @return string
      */
-    public function getBaseUrl();
-
-    /**
-     * @return string
-     */
     public function getUserAgent();
 
     /**

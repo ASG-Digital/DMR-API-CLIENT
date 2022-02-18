@@ -64,7 +64,7 @@ class ApiResponse implements HttpResponseInterface
      */
     public function isSuccessful()
     {
-        return is_int($this->getCode()) && $this->getCode() >= 200 && $this->getCode() <= 299;
+        return $this->getHttpResponse()->isSuccessful();
     }
 
     /**
