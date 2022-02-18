@@ -39,7 +39,7 @@ jobs:
                     configuration: ./phpunit.xml
                     memory_limit: 1024M
                 env:
-                    CLIENT_KEY: ${{ secrets.TEST_CLIENT_KEY }}
-                    USERNAME: ${{ secrets.TEST_USERNAME }}
-                    PASSWORD: ${{ secrets.TEST_PASSWORD }}
+                    TEST_CLIENT_KEY: ${{ secrets.TEST_CLIENT_KEY }}
+                    TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+                    TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
                     TEST_REMOTE: ${{ github.event.inputs.remote }}
