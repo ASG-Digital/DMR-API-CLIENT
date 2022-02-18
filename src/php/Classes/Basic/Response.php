@@ -79,4 +79,12 @@ class Response implements HttpResponseInterface
     {
         return $this->uri;
     }
+
+    /**
+     * @return bool
+     */
+    public function isSuccessful()
+    {
+        return is_int($this->getCode()) && $this->getCode() >= 200 && $this->getCode() <= 299;
+    }
 }
