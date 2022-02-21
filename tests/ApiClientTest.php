@@ -144,6 +144,18 @@ class ApiClientTest extends BaseTestCase
         }
     }
 
+    public function checkInsurance(ApiResponse $response)
+    {
+        $this->assertTrue($response->isSuccessful(), 'Request Failed.');
+        $this->assertTrue($response->hasContent(), 'Empty Data.');
+        $this->assertTrue($response->has('company'), 'No "company" found.');
+        $this->assertTrue(is_string($response->get('company')), '"company" is not a string value.');
+        $this->assertTrue($response->has('status'), 'No "status" found.');
+        $this->assertTrue(is_string($response->get('status')), '"status" is not a string value.');
+        $this->assertTrue($response->has('created'), 'No "created" found.');
+        $this->assertTrue(is_string($response->get('created')), '"created" is not a string value.');
+    }
+
     /**
      * @depends testKeyPair
      * @dataProvider vehicleProvider
@@ -152,5 +164,25 @@ class ApiClientTest extends BaseTestCase
     {
         $response = static::$apiClient->vehicleInfo()->getVehicle($type, $value, true);
         $this->checkVehicle($response, $make, $model, $year);
+    }
+
+    /**
+     * @depends testKeyPair
+     * @dataProvider vehicleProvider
+     */
+    public function testVehicleInfoCachedLookup($type, $value, $make, $model, $year = null)
+    {
+        $response = static::$apiClient->vehicleInfo()->getVehicleCached($type, $value);
+        $this->checkVehicle($response, $make, $model, $year);
+    }
+
+    /**
+     * @depends testKeyPair
+     * @dataProvider vehicleProvider
+     */
+    public function testVehicleInfoInsuranceScrapeLookup($type, $value, $make, $model, $year = null)
+    {
+        $response = static::$apiClient->vehicleInfo()->getInsurance($type, $value, true);
+        $this->checkInsurance($response);
     }
 }
