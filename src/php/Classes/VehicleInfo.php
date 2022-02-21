@@ -211,9 +211,10 @@ class VehicleInfo
     /**
      * @param string $lookup
      * @param string|int $value
+     * @param bool $forceLiveData
      * @return ApiResponse
      */
-    public function getEvaluations($lookup, $value)
+    public function getEvaluations($lookup, $value, $forceLiveData = false)
     {
         try {
             $this->checkLookup($lookup);
@@ -221,6 +222,7 @@ class VehicleInfo
             $uri = $this->buildUrl('evaluation', [
                 'type' => $lookup,
                 'value' => $value,
+                'force' => $forceLiveData,
             ]);
             return new ApiResponse($this->getApiClient()->getHttpClient()->get(
                 $uri,

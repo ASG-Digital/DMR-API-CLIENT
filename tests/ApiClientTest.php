@@ -241,7 +241,7 @@ class ApiClientTest extends BaseTestCase
      */
     public function testVehicleInfoEvaluationScrapeLookup($type, $value, $make, $model, $year = null)
     {
-        $response = static::$apiClient->vehicleInfo()->getEvaluations($type, $value);
+        $response = static::$apiClient->vehicleInfo()->getEvaluations($type, $value, true);
         $this->checkEvaluations($response);
     }
 }
