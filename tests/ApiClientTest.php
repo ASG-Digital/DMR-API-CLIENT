@@ -156,6 +156,45 @@ class ApiClientTest extends BaseTestCase
         $this->assertTrue(is_string($response->get('created')), '"created" is not a string value.');
     }
 
+    public function checkInspection(ApiResponse $response)
+    {
+        $this->assertTrue($response->isSuccessful(), 'Request Failed.');
+        $this->assertTrue($response->hasContent(), 'Empty Data.');
+        $this->assertTrue($response->has('never_inspected'), '"never_inspected" not found.');
+        $this->assertTrue($response->has('no_pending'), '"no_pending" not found.');
+        $this->assertIsBool($response->get('never_inspected'), '"never_inspected" is not a bool value.');
+        $this->assertIsBool($response->get('no_pending'), '"no_pending" is not a bool value.');
+        $this->assertIsBool($response->has('latest'), 'has "latest" did not return bool value.');
+        if ($response->has('latest.type')) {
+            $this->assertIsString($response->get('latest.type'), '"latest.type" is not a string');
+        }
+        if ($response->has('latest.result')) {
+            $this->assertIsString($response->get('latest.result'), '"latest.result" is not a string');
+        }
+        if ($response->has('latest.date')) {
+            $this->assertIsString($response->get('latest.date'), '"latest.date" is not a string');
+        }
+    }
+
+    public function checkEvaluations(ApiResponse $response)
+    {
+        $this->assertTrue($response->isSuccessful(), 'Request Failed.');
+        $this->assertTrue($response->hasContent(), 'Empty Data.');
+        $this->assertIsArray($response->getData(), 'Response data is not array.');
+        $this->assertNotEmpty($response->getData(), 'Response data is empty.');
+        foreach ($response->getData() as $evaluation) {
+            $this->assertIsArray($evaluation, 'Evaluation unit is not array.');
+            $this->assertNotEmpty($evaluation, 'Evaluation unit empty.');
+            $this->assertArrayHasKey('evaluation_id', $evaluation, 'Evaluation unit missing id.');
+            $this->assertIsInt($evaluation['evaluation_id'], 'Evaluation unit id is not a integer.');
+            $this->assertArrayHasKey('evaluation_date', $evaluation, 'Evaluation unit missing date.');
+            $this->assertArrayHasKey('vehicle', $evaluation, 'Evaluation unit missing vehicle.');
+            $this->assertIsArray($evaluation['vehicle'], 'Evaluation unit\'s vehicle is not an array.');
+            $this->assertArrayHasKey('id', $evaluation['vehicle'], 'Evaluation unit\'s vehicle is missing id.');
+            $this->assertIsInt($evaluation['vehicle']['id'], 'Evaluation unit\'s vehicle id is not a integer.');
+        }
+    }
+
     /**
      * @depends testKeyPair
      * @dataProvider vehicleProvider
@@ -184,5 +223,25 @@ class ApiClientTest extends BaseTestCase
     {
         $response = static::$apiClient->vehicleInfo()->getInsurance($type, $value, true);
         $this->checkInsurance($response);
+    }
+
+    /**
+     * @depends testKeyPair
+     * @dataProvider vehicleProvider
+     */
+    public function testVehicleInfoInspectionScrapeLookup($type, $value, $make, $model, $year = null)
+    {
+        $response = static::$apiClient->vehicleInfo()->getInspection($type, $value, true);
+        $this->checkInspection($response);
+    }
+
+    /**
+     * @depends testKeyPair
+     * @dataProvider vehicleProvider
+     */
+    public function testVehicleInfoEvaluationScrapeLookup($type, $value, $make, $model, $year = null)
+    {
+        $response = static::$apiClient->vehicleInfo()->getEvaluations($type, $value);
+        $this->checkEvaluations($response);
     }
 }
