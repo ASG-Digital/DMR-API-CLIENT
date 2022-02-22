@@ -7,7 +7,7 @@
 
 ### Prerequisites
 
-1. PHP 5.6 or above.
+1. PHP 7.3 or above.
 2. CUrl Extension installed in PHP
 
 ### Install
